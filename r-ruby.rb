@@ -155,10 +155,8 @@ module RRuby
       def translate_inputs
         parameter_map.each do |key, opts|
           value = nil
-          p @input[key]
           if (not @input[key].nil?) or opts[:required] or opts[:pos]
             make_array = false
-            p @input[key]
             if @input[key].kind_of?(Array)
               if opts[:type] == Color and @input[key].first.kind_of?(Numeric) and @input[key].length == 3
                 make_array = true
@@ -169,7 +167,6 @@ module RRuby
             if make_array
               @input[key] = [@input[key]]
             end
-            p @input[key]
             if opts[:array_type]
               @input[key] = opts[:type].new(@input[key])
             else
@@ -312,6 +309,10 @@ module RRuby
 
       def validate
         super
+        assert_each(@input[:x_range], Numeric, '@input[:x_range]')
+        assert_each(@input[:y_range], Numeric, '@input[:y_range]')
+        assert_equal(@input[:x_range].length, 2, '@input[:x_range]')
+        assert_equal(@input[:y_range].length, 2, '@input[:y_range]')
         assert(@input[:x_range][0] < @input[:x_range][1], TrueClass, '@input[:x_range][0] < @input[:x_range][1]')
         assert(@input[:y_range][0] < @input[:y_range][1], TrueClass, '@input[:x_range][0] < @input[:x_range][1]')
         @keyed[:type] = 'o'
@@ -912,10 +913,10 @@ module RRuby
       unless @series.length > 0
         raise(Error, 'You must add at least one series before plotting.')
       end
-      if @args[:x_range] == :auto
+      if @args[:x_range] == :auto or @args[:x_range] == nil
         @args[:x_range] = find_auto_range(:x)
       end
-      if @args[:y_range] == :auto
+      if @args[:y_range] == :auto or @args[:y_range] == nil
         @args[:y_range] = find_auto_range(:y)
       end
       plot_options = {
