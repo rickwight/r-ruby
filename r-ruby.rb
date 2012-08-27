@@ -180,7 +180,7 @@ module RRuby
                 end
               end
               if @input[key].kind_of?(Array) and not opts[:array_type]
-                if @input[key].length == 1
+                if @input[key].length == 1 and not @input[key].first.kind_of?(Numeric)
                   @input[key] = @input[key].first
                 elsif @input[key].empty?
                   @input[key] = nil
